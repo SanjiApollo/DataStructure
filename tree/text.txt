@@ -1,0 +1,2 @@
+(a,#,#) (b,a,l) (c,a,r) (d,b,l) (e,b,r) (f,c,l)
+(g,c,r) (h,f,l)
