@@ -22,7 +22,11 @@ void main() {
 	printf("\n");
 
 	printf("post order traverse: \t");
-	BiTreeInOrderTraverse(biTree, Visit);
+	BiTreePostOrderTraverse(biTree, Visit);
+	printf("\n");
+	
+	printf("broad order traverse: \t");
+	BiTreeBroadTraverse(biTree, Visit);
 	printf("\n");
 }
 

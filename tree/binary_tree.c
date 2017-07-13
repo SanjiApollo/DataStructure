@@ -2,6 +2,8 @@
 #include<stdlib.h>
 #include<ctype.h>
 #include"binary_tree.h"
+#include"../stack/queue.h"
+
 
 typedef char ElementType;
 
@@ -126,15 +128,32 @@ void BiTreePreOrderTraverse(BiTree tree, void (*Visit)(ElementType data)) {
 }
 void BiTreeInOrderTraverse(BiTree tree, void (*Visit)(ElementType data)) {
 	if(tree != NULL) {
-		BiTreePreOrderTraverse(tree->lchild, Visit);
+		BiTreeInOrderTraverse(tree->lchild, Visit);
 		Visit(tree->data);
-		BiTreePreOrderTraverse(tree->rchild, Visit);
+		BiTreeInOrderTraverse(tree->rchild, Visit);
 	}
 }
 void BiTreePostOrderTraverse(BiTree tree, void (*Visit)(ElementType data)) {
 	if(tree != NULL) {
-		BiTreePreOrderTraverse(tree->lchild, Visit);
-		BiTreePreOrderTraverse(tree->rchild, Visit);
+		BiTreePostOrderTraverse(tree->lchild, Visit);
+		BiTreePostOrderTraverse(tree->rchild, Visit);
 		Visit(tree->data);
 	}
+}
+
+void BiTreeBroadTraverse(BiTree tree, void (*Visit)(ElementType data)) {
+	Queue queue = CreateQueue();
+    BiTree tmp;
+	EnQueue(queue, tree);
+	while(!IsEmptyQueue(queue)) {
+        tmp = DeQueue(queue);
+		if(tmp->lchild != NULL) {
+			EnQueue(queue, tmp->lchild);
+		}
+		if(tmp->rchild != NULL) {
+			EnQueue(queue, tmp->rchild);
+		}
+		Visit(tmp->data);
+	}
+	DestoryQueue(queue);
 }

@@ -68,3 +68,19 @@ void MakeEmptyQueue(Queue queue) {
 		DeQueue(queue);
 	}
 }
+
+void DestoryQueue(Queue queue) {
+    if(queue == NULL) {
+        printf("queue doesn't exist!\n");
+        return;
+    }
+
+    MakeEmptyQueue(queue);
+    free(queue->front);
+}
+
+
+
+
+
+

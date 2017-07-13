@@ -45,5 +45,6 @@ void BiTreeInOrderTraverse(BiTree tree, void (*Visit)(ElementType data));
 
 void BiTreePostOrderTraverse(BiTree tree, void (*Visit)(ElementType data));
 
+void BiTreeBroadTraverse(BiTree tree, void (*Visit)(ElementType data));
 
 #endif
