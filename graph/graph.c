@@ -55,18 +55,17 @@ void G_InsertVertex(Graph g, char vertex) {
 }
 
 int GetVertexNumByName(Graph g, char vname);
+void _G_InsertEdge(Graph g, char v1, char v2, int weight, bool isUG);
+bool HasTheEdge(Graph g, int v1num, int v2num);
 void G_InsertEdge(Graph g, char v1, char v2, int weight) {
-    int v1num = GetVertexNumByName(g, v1);
-    int v2num = GetVertexNumByName(g, v2);
-    if(v1num == -1 || v2num == -1) {
-        printf("the vertex doesn't exist! (%c, %c)\n", v1, v2);
-        exit(1);
+    switch(g->gkind) {
+        case _GK_UDN:
+        case _GK_UDG: _G_InsertEdge(g, v1, v2, weight, true);
+                      break;
+        case _GK_DG: 
+        case _GK_DN: _G_InsertEdge(g, v1, v2, weight, false);
+                      break;
     }
-    EdgeNode *enode = (EdgeNode*) malloc (sizeof(EdgeNode));
-    enode->vnum = v2num;
-    enode->weight = weight;
-    enode->nextArc = g->varray[v1num]->firstArc;
-    g->varray[v1num]->firstArc = enode;
 }
 int GetVertexNumByName(Graph g, char vname) {
     for(int i = 0; i < g->vnums; ++ i) {
@@ -76,7 +75,45 @@ int GetVertexNumByName(Graph g, char vname) {
     }
     return -1;
 }
+void _G_InsertEdge(Graph g, char v1, char v2, int weight, bool isUG) {
+    int v1num = GetVertexNumByName(g, v1);
+    int v2num = GetVertexNumByName(g, v2);
+    if(v1num == -1 || v2num == -1) {
+        printf("the vertex doesn't exist! (%c, %c)\n", v1, v2);
+        exit(1);
+    }
+    if(HasTheEdge(g, v1num, v2num)) {
+        printf("the edge already exists!\n");
+        return ;
+    }
+    EdgeNode *enode = NULL;
+    enode = (EdgeNode*) malloc (sizeof(EdgeNode));
+    if(enode == NULL) {
+        printf("failed to create EdgeNode!\n");
+        exit(1);
+    }
+    enode->vnum = v2num;
+    enode->weight = weight;
+    enode->nextArc = g->varray[v1num]->firstArc;
+    g->varray[v1num]->firstArc = enode;
 
+    if(isUG) {
+        enode = (EdgeNode*) malloc (sizeof(EdgeNode));
+        if(enode == NULL) {
+            printf("failed to create EdgeNode!\n");
+            exit(1);
+        }
+        enode->vnum = v1num;
+        enode->weight = weight;
+        enode->nextArc = g->varray[v2num]->firstArc;
+        g->varray[v2num]->firstArc = enode;
+    }
+}
+bool HasTheEdge(Graph g, int v1num, int v2num) {
+    EdgeNode *p = g->varray[v1num]->firstArc;
+    for(; p != NULL && p->vnum != v2num; p = p->nextArc);
+    return p != NULL;
+}
 // void G_BFS(Graph g);
 
 void _G_DFS(Graph g, _Bool *visited, int vnum, void (*Visit)(char vname));
@@ -99,6 +136,7 @@ void _G_DFS(Graph g, _Bool *visited, int vnum, void (*Visit)(char vname)) {
     }
 }
 
+// 以下是辅助函数
 void VisitAllEdges(Graph g, void (*Visit)(char vname)) {
     EdgeNode *p = NULL;     // 小心p的作用域范围
     for(int i = 0; i < g->vnums; ++ i) {

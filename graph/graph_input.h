@@ -10,7 +10,7 @@ typedef struct _G_Input_Stack *_G_Input_Stack;
 
 void MakeTheGraph(Graph g);
 
-void GetEdgesWithWeight(char *edges, int *weights, int *edgenums);
+void GetEdgesWithWeight(char *edges, int *weights, int *edgenums, bool hasWeight);
 bool IsDigitalStr(char *digtStr, int length);
 int Str2Int(char *digtStr, int length);
 

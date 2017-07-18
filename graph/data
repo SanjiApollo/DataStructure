@@ -1,2 +1,4 @@
 A B C D E
 (A,B,11) (A,C,12) (C,D,1) (B,D,2) (D,E,5)
+
+(A,B) (A,C) (C,D) (B,D) (E,D)

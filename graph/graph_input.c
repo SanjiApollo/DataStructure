@@ -7,7 +7,7 @@ void MakeTheGraph(Graph g) {
     // 输入得到图的类型
     int gkind;
 
-    printf("please give all the vetexes(Ctrl+D to end input):\n");
+    printf("***please give all the vetexes(Ctrl+D to end input):\n");
     char vertex;
     while(1) {
         while(isspace(vertex = getchar()));
@@ -16,8 +16,8 @@ void MakeTheGraph(Graph g) {
     }
 
     // 得到图的类型
-    printf("what's the kind of the graph?");
-    printf("  0.DG  1.DN  2.UDG  3.UDN\n the kind is: ");
+    printf("****what's the kind of the graph?***");
+    printf("  0.DG  1.DN  2.UDG  3.UDN\n***the kind is: ");
 
     while(1) {
         scanf("%d", &gkind);
@@ -39,6 +39,7 @@ void MakeTheGraph(Graph g) {
     int w;
     int edgenums;
 
+    // 带权边的输入
     if(gkind == 1 || gkind == 3) {
         char *edges = (char*) malloc (sizeof(char) * MAX_EDGE_NUMS * 2);
         int *weights = (int*) malloc (sizeof(int) * MAX_EDGE_NUMS);
@@ -46,8 +47,8 @@ void MakeTheGraph(Graph g) {
             printf("can't create edges and weights!\n");
             exit(1);
         }
-        printf("give all the arcs，the fromat is (v1, v2, weight)：\n");
-        GetEdgesWithWeight(edges, weights, &edgenums);
+        printf("***give all the arcs，the fromat is (v1, v2, weight)：\n");
+        GetEdgesWithWeight(edges, weights, &edgenums, true);
 /*
  *what's wrong with the input?
         for(int i = 0; i < 2 * edgenums; ++i) {
@@ -60,11 +61,27 @@ void MakeTheGraph(Graph g) {
         free(edges);
         free(weights);
     }
+
+    // 不带权边的输入，设置权值为-1表示无权图
     if(gkind == 0 || gkind == 2) {
+        char *edges = (char*) malloc (sizeof(char) * MAX_EDGE_NUMS * 2);
+        int *weights = NULL;
+        if(edges == NULL) {
+            printf("can't create edges and weights!\n");
+            exit(1);
+        }
         printf("give all the edges，the format is (v1, v2)：\n");
-            //GetTheEdges(&v1, &v2, &isEOF);
-            // if(isEOF == 1) break;
-            G_InsertEdge(g, v1, v2, 0);
+        GetEdgesWithWeight(edges, weights, &edgenums, false);
+/*
+ *what's wrong with the input?
+        for(int i = 0; i < 2 * edgenums; ++i) {
+            printf("%c ", edges[i]);
+        }
+*/
+        for(int i = 0; i < edgenums; ++ i) {
+            G_InsertEdge(g, edges[2 * i], edges[2 * i + 1], -1);
+        }
+        free(edges);
     }
 }
 
@@ -90,12 +107,12 @@ int Str2Int(char *digtStr, int length) {
     return value;
 }
 
-void GetEdgesWithWeight(char *edges, int *weights, int *edgenums) {
+void GetEdgesWithWeight(char *edges, int *weights, int *edgenums, bool hasWeight) {
     char ch;
     int nums = 0;
     char str[50];
     int count = 0;
-    int tmpw;
+    int tmpw = -1;
     while(true) {
         while(isspace(ch = getchar()));
         if(ch == EOF) break;
@@ -113,8 +130,10 @@ void GetEdgesWithWeight(char *edges, int *weights, int *edgenums) {
                 printf("the format (%c, %c) is wrong\n", str[1], str[3]);
                 exit(1);
             }
-            tmpw = Str2Int(str + 5, count - 5);
-            weights[nums] = tmpw;
+            if(hasWeight) {
+                tmpw = Str2Int(str + 5, count - 5);
+                weights[nums] = tmpw;
+            }
             edges[2 * nums] = str[1];
             edges[2 * nums + 1] = str[3];
             *edgenums = ++ nums;
