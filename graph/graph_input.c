@@ -3,58 +3,6 @@
 #include<stdlib.h>
 #include<ctype.h>
 
-void GetTheEdgesWeight(char *edges, int *elength, int *weight, int *wlength);
-
-_G_Input_Stack _G_Input_InitStack() {
-    _G_Input_Stack stack = (_G_Input_Stack) malloc (sizeof(struct _G_Input_Stack));
-    if(stack == NULL) {
-        printf("failed to create _G_Input_Stack!\n");
-        exit(1);
-    }
-    stack->top = -1;
-}
-
-bool _G_Input_IsEmptyStack(_G_Input_Stack s) {
-    return s->top == -1;
-}
-
-bool _G_Input_IsFullStack(_G_Input_Stack s) {
-    return s->top == _G_INPUT_MAX_STACK_SIZE -1;
-}
-
-void _G_Input_Push(_G_Input_Stack s, char ch) {
-    if(_G_Input_IsFullStack(s)) {
-        printf("_G_Input_Stack is full!\n");
-        exit(1);
-    }
-    s->top ++;
-    s->array[s->top] = ch;
-}
-
-char _G_Input_Pop(_G_Input_Stack s) {
-    if(_G_Input_IsEmptyStack(s)) {
-        printf("_G_Input_Stack is empty!\n");
-        exit(1);
-    }
-    return s->array[s->top --];
-}
-
-char _G_Input_GetTop(_G_Input_Stack s) {
-    if(_G_Input_IsEmptyStack(s)) {
-        printf("_G_Input_Stack is empty!\n");
-        exit(1);
-    }
-    return s->array[s->top];
-}
-
-void _G_Input_MakeEmptyStack(_G_Input_Stack s) {
-    s->top = -1;
-}
-
-void _G_Input_DestoryStack(_G_Input_Stack s) {
-    free(s);
-}
-
 void MakeTheGraph(Graph g) {
     // 输入得到图的类型
     int gkind;
@@ -89,21 +37,28 @@ void MakeTheGraph(Graph g) {
 
     char v1, v2;
     int w;
-    int isEOF = 0;
-    char edges[1024];
-    int weight[512];
-    int elength, wlength;
+    int edgenums;
+
     if(gkind == 1 || gkind == 3) {
-        printf("give all the arcs，the fromat is (v1, v2, weight)：\n");
-            //GetTheArcs(&v1, &v2, &weight, &isEOF);
-            // if(isEOF == 1) break;
-        GetTheEdgesWeight(edges, &elength, weight, &wlength);
-        for(int i = 0, j = 0; i < elength; i += 2, j ++) {
-            v1 = edges[i];
-            v2 = edges[i + 1];
-            w = weight[j];
-            G_InsertEdge(g, v1, v2, w);
+        char *edges = (char*) malloc (sizeof(char) * MAX_EDGE_NUMS * 2);
+        int *weights = (int*) malloc (sizeof(int) * MAX_EDGE_NUMS);
+        if(edges == NULL || weights == NULL) {
+            printf("can't create edges and weights!\n");
+            exit(1);
         }
+        printf("give all the arcs，the fromat is (v1, v2, weight)：\n");
+        GetEdgesWithWeight(edges, weights, &edgenums);
+/*
+ *what's wrong with the input?
+        for(int i = 0; i < 2 * edgenums; ++i) {
+            printf("%c ", edges[i]);
+        }
+*/
+        for(int i = 0; i < edgenums; ++ i) {
+            G_InsertEdge(g, edges[2 * i], edges[2 * i + 1], weights[i]);
+        }
+        free(edges);
+        free(weights);
     }
     if(gkind == 0 || gkind == 2) {
         printf("give all the edges，the format is (v1, v2)：\n");
@@ -135,55 +90,37 @@ int Str2Int(char *digtStr, int length) {
     return value;
 }
 
-void GetTheEdgesWeight(char *edges, int *elength, int *weight, int *wlength) {
+void GetEdgesWithWeight(char *edges, int *weights, int *edgenums) {
     char ch;
-    char str[30];
-    int position = 29;
-    int eposition = 0, wposition = 0;
-    _G_Input_Stack stack = _G_Input_InitStack();
-    int length = 0;
+    int nums = 0;
+    char str[50];
+    int count = 0;
+    int tmpw;
     while(true) {
         while(isspace(ch = getchar()));
         if(ch == EOF) break;
-        _G_Input_Push(stack, ch);
-    }
+        if(ch != ')' && count < 50) {
+            str[count ++] = ch;
+        } else if(count == 50) {
+            printf("the edges format is wrong!\n");
+            exit(1);
+        } else {
+            if(str[0] != '(') {
+                printf("edges format begin with a \'(\'\n");
+                exit(1);
+            }
+            if(!isalpha(str[1]) || !isalpha(str[3])) {
+                printf("the format (%c, %c) is wrong\n", str[1], str[3]);
+                exit(1);
+            }
+            tmpw = Str2Int(str + 5, count - 5);
+            weights[nums] = tmpw;
+            edges[2 * nums] = str[1];
+            edges[2 * nums + 1] = str[3];
+            *edgenums = ++ nums;
 
-    if(_G_Input_GetTop(stack) != ')') {
-        printf("wrong edge format\n");
-        exit(1);
-    }
-    while(!_G_Input_IsEmptyStack(stack)) {
-        position = 29;
-        while((ch = _G_Input_Pop(stack)) != '(') {
-            str[position --] = ch;
+            count = 0;
         }
-        
-        edges[eposition ++] = str[position + 1];
-        edges[eposition ++] = str[position + 3];
-        int w = Str2Int(&str[position + 5], 24 - position);
-        weight[wposition ++] = w;
     }
-    *elength = eposition;
-    *wlength = wposition;
-
-    _G_Input_DestoryStack(stack);
 }
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

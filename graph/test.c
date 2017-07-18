@@ -7,6 +7,8 @@ void Visit(char vname);
 int main() {
 	Graph g = InitGraph();
 	MakeGraph(g);
+    VisitAllEdges(g, Visit);
+    printf("\n DFS: ");
     G_DFS(g, Visit);
     printf("\n");
 }

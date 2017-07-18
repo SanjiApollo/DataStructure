@@ -98,3 +98,16 @@ void _G_DFS(Graph g, _Bool *visited, int vnum, void (*Visit)(char vname)) {
         }
     }
 }
+
+void VisitAllEdges(Graph g, void (*Visit)(char vname)) {
+    EdgeNode *p = NULL;     // 小心p的作用域范围
+    for(int i = 0; i < g->vnums; ++ i) {
+        p = g->varray[i]->firstArc;
+        Visit(g->varray[i]->vname);
+        while(p != NULL) {
+            Visit(g->varray[p->vnum]->vname);
+            p = p->nextArc;
+        }
+        printf("\n");
+    }
+}

@@ -8,7 +8,9 @@
  *图的类型可以是无向图，有向图，网
  */
 
+// 研究范围是20个顶点，380条以内的边
 #define MAX_VERTEX_NUMS 20
+#define MAX_EDGE_NUMS 380
 
 typedef enum { _GK_DG, _GK_DN, _GK_UDG, _GK_UDN } GraphKind;
 
@@ -20,11 +22,6 @@ typedef struct VertexNode VertexNode;
 
 struct EdgeNode;
 typedef struct EdgeNode EdgeNode;
-
-/*struct VisitedNode;
-typedef struct VisitedNode VisitedNode;
-typedef struct VisitedNode *VisitedArray;
-*/
 
 struct Graph {
     GraphKind gkind;
@@ -56,5 +53,8 @@ void G_DestoryGraph(Graph g);
 // 图的遍历
 void G_BFS(Graph g, void (*Visit)(char vname));
 void G_DFS(Graph g, void (*Visit)(char vname));
+
+// 辅助工具
+void VisitAllEdges(Graph g, void (*Visit)(char vname));
 
 #endif
