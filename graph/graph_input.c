@@ -7,17 +7,18 @@ void MakeTheGraph(Graph g) {
     // 输入得到图的类型
     int gkind;
 
-    printf("***please give all the vetexes(Ctrl+D to end input):\n");
+    printf("---------------------------------------------\n");
+    printf(" >>> give all the vetexes(Ctrl+D to end input):\n    ");
     char vertex;
     while(1) {
         while(isspace(vertex = getchar()));
         if(vertex == EOF) break;
         G_InsertVertex(g, vertex);
     }
-
+    printf("---------------------------------------------\n");
     // 得到图的类型
-    printf("****what's the kind of the graph?***");
-    printf("  0.DG  1.DN  2.UDG  3.UDN\n***the kind is: ");
+    printf(" >>> what's the kind of the graph?");
+    printf("  0.DG  1.DN  2.UDG  3.UDN\n >>> the kind is:    ");
 
     while(1) {
         scanf("%d", &gkind);
@@ -27,7 +28,7 @@ void MakeTheGraph(Graph g) {
             break;
         }
     }
-
+    printf("---------------------------------------------\n");
     switch (gkind) {
         case 0: g->gkind = _GK_DG; break;
         case 1: g->gkind = _GK_DN; break;
@@ -47,7 +48,7 @@ void MakeTheGraph(Graph g) {
             printf("can't create edges and weights!\n");
             exit(1);
         }
-        printf("***give all the arcs，the fromat is (v1, v2, weight)：\n");
+        printf(" >>> give all the edges，the fromat is (v1, v2, weight)：\n");
         GetEdgesWithWeight(edges, weights, &edgenums, true);
 /*
  *what's wrong with the input?
@@ -70,7 +71,7 @@ void MakeTheGraph(Graph g) {
             printf("can't create edges and weights!\n");
             exit(1);
         }
-        printf("give all the edges，the format is (v1, v2)：\n");
+        printf(" >>> give all the edges，the format is (v1, v2)：\n");
         GetEdgesWithWeight(edges, weights, &edgenums, false);
 /*
  *what's wrong with the input?
@@ -83,6 +84,7 @@ void MakeTheGraph(Graph g) {
         }
         free(edges);
     }
+    printf("---------------------------------------------\n");
 }
 
 bool IsDigitalStr(char *digitStr, int length) {

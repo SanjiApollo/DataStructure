@@ -136,6 +136,9 @@ void _G_DFS(Graph g, _Bool *visited, int vnum, void (*Visit)(char vname)) {
     }
 }
 
+void G_DestoryGraph(Graph g) {
+}
+
 // 以下是辅助函数
 void VisitAllEdges(Graph g, void (*Visit)(char vname)) {
     EdgeNode *p = NULL;     // 小心p的作用域范围
