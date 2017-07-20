@@ -104,8 +104,9 @@ int Str2Int(char *digtStr, int length) {
     int value = 0;
     int coeff = 1;
     for(int i = length - 1; i != -1; -- i, coeff *= 10) {
-        value += digtStr[i] * coeff;
+        value += (digtStr[i] - '0') * coeff;
     }
+    printf("%d\n", value);
     return value;
 }
 

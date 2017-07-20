@@ -56,5 +56,6 @@ void G_DFS(Graph g, void (*Visit)(char vname));
 
 // 辅助工具
 void VisitAllEdges(Graph g, void (*Visit)(char vname));
+void VisitAllEdgesWithWeight(Graph g);
 
 #endif

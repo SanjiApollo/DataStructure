@@ -3,6 +3,7 @@
 #include<ctype.h>
 #include"graph.h"
 #include"graph_input.h"
+#include"graph_queue.h"
 
 void MakeGraph(Graph g) {
     if(g == NULL) {
@@ -114,7 +115,35 @@ bool HasTheEdge(Graph g, int v1num, int v2num) {
     for(; p != NULL && p->vnum != v2num; p = p->nextArc);
     return p != NULL;
 }
-// void G_BFS(Graph g);
+
+void G_BFS(Graph g, void (*Visit)(char vname)) {
+    bool *visited = (bool*) malloc (sizeof(bool) * g->vnums);
+    G_Queue queue = G_InitQueue();
+    EdgeNode *p = NULL;
+    for(int i = 0; i < g->vnums; ++i) visited[i] = false;
+    for(int i = 0; i < g->vnums; ++i) {
+        if(!visited[i]) {
+            visited[i] = true;
+            Visit(g->varray[i]->vname);
+            G_EnQueue(queue, i);
+            while(!G_IsEmptyQueue(queue)) {
+                int vnum = G_DeQueue(queue);
+                p = g->varray[vnum]->firstArc;
+                while(p != NULL) {
+                    if(!visited[p->vnum]) {
+                        visited[p->vnum] = true;
+                        Visit(g->varray[p->vnum]->vname);
+                        G_EnQueue(queue, p->vnum);
+                    }
+                    p = p->nextArc;
+                }
+            }
+        }
+
+    }
+    free(visited);
+    G_DestoryQueue(queue);
+}
 
 void _G_DFS(Graph g, _Bool *visited, int vnum, void (*Visit)(char vname));
 void G_DFS(Graph g, void (*Visit)(char data)) {
@@ -124,6 +153,7 @@ void G_DFS(Graph g, void (*Visit)(char data)) {
         if(!visited[i])
             _G_DFS(g, visited, i, Visit);
     }
+    free(visited);
 }
 
 void _G_DFS(Graph g, _Bool *visited, int vnum, void (*Visit)(char vname)) {
@@ -147,6 +177,19 @@ void VisitAllEdges(Graph g, void (*Visit)(char vname)) {
         Visit(g->varray[i]->vname);
         while(p != NULL) {
             Visit(g->varray[p->vnum]->vname);
+            p = p->nextArc;
+        }
+        printf("\n");
+    }
+}
+
+void VisitAllEdgesWithWeight(Graph g) {
+    EdgeNode *p = NULL;     // 小心p的作用域范围
+    for(int i = 0; i < g->vnums; ++ i) {
+        p = g->varray[i]->firstArc;
+        printf("%c: ", g->varray[i]->vname);
+        while(p != NULL) {
+            printf("--%d--%c", p->weight, g->varray[p->vnum]->vname);
             p = p->nextArc;
         }
         printf("\n");
