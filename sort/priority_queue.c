@@ -59,7 +59,26 @@ void PQ_Insert(PriorityQueue q, int data) {
 	q->array[i] = data;
 }
 
-// int PQ_DeleteMin(PriorityQueue q);
+int PQ_DeleteMin(PriorityQueue q) {
+	if(PQ_IsEmpty(q)) {
+		printf("the PQ is empty!\n");
+		return q->array[0];
+	}
+
+	int min = q->array[1];
+	int last = q->array[q->length];
+//	printf("last = %d\n", last);
+
+	int i = 1;
+	while(2 * i < q->length) {
+		int tmp = q->array[2*i] < q->array[2*i+1] ? (2*i) : (2*i+1);
+		q->array[i] = q->array[tmp];
+		i = tmp;
+	}
+	q->array[i] = last;
+	-- q->length;
+	return last;
+}	
 
 // int PQ_FindMin(PriorityQueue q);
 
@@ -70,7 +89,7 @@ void PQ_Visit(PriorityQueue q) {
 		return ;
 	}
 	for(int i = 1; i <= q->length; ++i) {
-	   printf("%4d", q->array[i]);
+	   printf("%4d|", q->array[i]);
 	}
 	printf("\n");
 }	
