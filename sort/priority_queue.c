@@ -70,7 +70,7 @@ int PQ_DeleteMin(PriorityQueue q) {
 //	printf("last = %d\n", last);
 
 	int i = 1;
-	while(2 * i < q->length) {
+	while(2 * i < q->length) {  // 进行向上调整，直到叶子节点，或者只有做孩子的父节点
 		int tmp = q->array[2*i] < q->array[2*i+1] ? (2*i) : (2*i+1);
 		q->array[i] = q->array[tmp];
 		i = tmp;
@@ -80,7 +80,13 @@ int PQ_DeleteMin(PriorityQueue q) {
 	return last;
 }	
 
-// int PQ_FindMin(PriorityQueue q);
+int PQ_FindMin(PriorityQueue q) {
+	if(PQ_IsEmpty(q)) {
+		printf("PQ is empty!\n");
+		return q->array[0];
+	}
+	return q->array[1];
+}
 
 
 void PQ_Visit(PriorityQueue q) {
